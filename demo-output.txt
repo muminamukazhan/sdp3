@@ -1,0 +1,9 @@
+T1 PASS | Reminder + EmailChannel | result=[EMAIL] To: Komugi | Subject: Reminder | Body: Gungi match with Meruem at 20:00
+T2 PASS | Reminder + SmsChannel | result=[SMS] Komugi: Reminder - Gungi match with Meruem at 20:00
+T3 PASS | UrgentAlert + EmailChannel | result=[EMAIL] To: Komugi | Subject: URGENT: Goodnight, Meruem | Body: The palace lights go out in 10 minutes
+T4 PASS | UrgentAlert + SmsChannel | result=[SMS] Komugi: URGENT: Goodnight, Meruem - The palace lights go out in 10 minutes
+T5 PASS | sameObject=true | stateUnchanged=true
+ before=[EMAIL] To: Komugi | Subject: Reminder | Body: Gungi match with Meruem at 20:00 | after=[SMS] Komugi: Reminder - Gungi match with Meruem at 20:00
+T6 PASS | Reminder + PushChannel | result=[PUSH] Device: Komugi | Title: Reminder | Text: Gungi match with Meruem at 20:00
+T7 PASS | UrgentAlert + PushChannel | result=[PUSH] Device: Komugi | Title: URGENT: Goodnight, Meruem | Text: The palace lights go out in 10 minutes
+SUMMARY: 7/7 PASS

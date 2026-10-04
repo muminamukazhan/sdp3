@@ -1,0 +1,77 @@
+diff --git a/src/Main.java b/src/Main.java
+index 1c90d7b..45afc96 100644
+--- a/src/Main.java
++++ b/src/Main.java
+@@ -1,5 +1,6 @@
+ import channel.Channel;
+ import channel.EmailChannel;
++import channel.PushChannel;
+ import channel.SmsChannel;
+ import notification.Notification;
+ import notification.Reminder;
+@@ -17,10 +18,14 @@ public class Main {
+             "[EMAIL] To: Komugi | Subject: Reminder | Body: Gungi match with Meruem at 20:00";
+     private static final String SMS_REMINDER =
+             "[SMS] Komugi: Reminder - Gungi match with Meruem at 20:00";
++    private static final String PUSH_REMINDER =
++            "[PUSH] Device: Komugi | Title: Reminder | Text: Gungi match with Meruem at 20:00";
+     private static final String EMAIL_ALERT =
+             "[EMAIL] To: Komugi | Subject: URGENT: Goodnight, Meruem | Body: The palace lights go out in 10 minutes";
+     private static final String SMS_ALERT =
+             "[SMS] Komugi: URGENT: Goodnight, Meruem - The palace lights go out in 10 minutes";
++    private static final String PUSH_ALERT =
++            "[PUSH] Device: Komugi | Title: URGENT: Goodnight, Meruem | Text: The palace lights go out in 10 minutes";
+ 
+     private static int passed = 0;
+     private static int total = 0;
+@@ -42,6 +47,7 @@ public class Main {
+         verifyPair("T3", new UrgentAlert("ALR-001", RECEIVER, ALERT_TEXT, email), email, EMAIL_ALERT);
+         verifyPair("T4", new UrgentAlert("ALR-001", RECEIVER, ALERT_TEXT, sms), sms, SMS_ALERT);
+         verifyRuntimeSwitch();
++        runPushChecks();
+ 
+         System.out.println("SUMMARY: " + passed + "/" + total + " PASS");
+         if (passed != total) {
+@@ -49,6 +55,12 @@ public class Main {
+         }
+     }
+ 
++    private static void runPushChecks() {
++        Channel push = new PushChannel();
++        verifyPair("T6", new Reminder("REM-001", RECEIVER, REMINDER_TEXT, push), push, PUSH_REMINDER);
++        verifyPair("T7", new UrgentAlert("ALR-001", RECEIVER, ALERT_TEXT, push), push, PUSH_ALERT);
++    }
++
+     private static void verifyPair(String id, Notification notification, Channel channel, String expected) {
+         String actual = notification.execute();
+         boolean pass = expected.equals(actual);
+@@ -96,4 +108,4 @@ public class Main {
+     private static String verdict(boolean pass) {
+         return pass ? "PASS" : "FAIL";
+     }
+-}
++}
+\ No newline at end of file
+diff --git a/src/channel/PushChannel.java b/src/channel/PushChannel.java
+new file mode 100644
+index 0000000..2c3a770
+--- /dev/null
++++ b/src/channel/PushChannel.java
+@@ -0,0 +1,16 @@
++package channel;
++
++public class PushChannel implements Channel {
++
++    @Override
++    public String channelLabel() {
++        return "Push";
++    }
++
++    @Override
++    public String transmit(String address, String title, String content) {
++        return "[PUSH] Device: " + address
++                + " | Title: " + title
++                + " | Text: " + content;
++    }
++}
+\ No newline at end of file
