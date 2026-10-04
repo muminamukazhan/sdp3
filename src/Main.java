@@ -1,5 +1,6 @@
 import channel.Channel;
 import channel.EmailChannel;
+import channel.PushChannel;
 import channel.SmsChannel;
 import notification.Notification;
 import notification.Reminder;
@@ -17,10 +18,14 @@ public class Main {
             "[EMAIL] To: Komugi | Subject: Reminder | Body: Gungi match with Meruem at 20:00";
     private static final String SMS_REMINDER =
             "[SMS] Komugi: Reminder - Gungi match with Meruem at 20:00";
+    private static final String PUSH_REMINDER =
+            "[PUSH] Device: Komugi | Title: Reminder | Text: Gungi match with Meruem at 20:00";
     private static final String EMAIL_ALERT =
             "[EMAIL] To: Komugi | Subject: URGENT: Goodnight, Meruem | Body: The palace lights go out in 10 minutes";
     private static final String SMS_ALERT =
             "[SMS] Komugi: URGENT: Goodnight, Meruem - The palace lights go out in 10 minutes";
+    private static final String PUSH_ALERT =
+            "[PUSH] Device: Komugi | Title: URGENT: Goodnight, Meruem | Text: The palace lights go out in 10 minutes";
 
     private static int passed = 0;
     private static int total = 0;
@@ -42,11 +47,18 @@ public class Main {
         verifyPair("T3", new UrgentAlert("ALR-001", RECEIVER, ALERT_TEXT, email), email, EMAIL_ALERT);
         verifyPair("T4", new UrgentAlert("ALR-001", RECEIVER, ALERT_TEXT, sms), sms, SMS_ALERT);
         verifyRuntimeSwitch();
+        runPushChecks();
 
         System.out.println("SUMMARY: " + passed + "/" + total + " PASS");
         if (passed != total) {
             System.exit(1);
         }
+    }
+
+    private static void runPushChecks() {
+        Channel push = new PushChannel();
+        verifyPair("T6", new Reminder("REM-001", RECEIVER, REMINDER_TEXT, push), push, PUSH_REMINDER);
+        verifyPair("T7", new UrgentAlert("ALR-001", RECEIVER, ALERT_TEXT, push), push, PUSH_ALERT);
     }
 
     private static void verifyPair(String id, Notification notification, Channel channel, String expected) {
